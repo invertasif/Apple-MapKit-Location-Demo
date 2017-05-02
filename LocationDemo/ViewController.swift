@@ -7,18 +7,54 @@
 //
 
 import UIKit
+import CoreLocation
+import MapKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, CLLocationManagerDelegate{
+    
+    @IBOutlet weak var mapOutlet: MKMapView!
 
+    
+//    @IBOutlet weak var latitudeLongitude: UILabel!
+//    @IBOutlet weak var longitudeLabel: UILabel!
+    
+    var manager: CLLocationManager = CLLocationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        // Set the delegate for the location manager
+        manager.delegate  = self
+        // ask authorization from user
+        manager.requestWhenInUseAuthorization()
+        //start the location update
+        manager.startUpdatingLocation()
+        
+//         Only once u want to use permission
+//        manager.requestLocation()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        
+        print(locations)
+        let location = locations[0]
+        
+        let span = MKCoordinateSpan(latitudeDelta: 0.1, longitudeDelta: 0.1)
+        let position = location.coordinate
+        let region = MKCoordinateRegion(center: position, span: span)
+        
+        mapOutlet.setRegion(region, animated: true)
+        mapOutlet.showsUserLocation = true
+        
+        // show location data on label
+//        latitudeLongitude.text =  String(location.coordinate.latitude)
+//        longitudeLabel.text = String(location.coordinate.longitude)
+        print(location)
+        
     }
+    
 
 
 }
